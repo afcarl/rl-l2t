@@ -7,7 +7,7 @@ import theano.tensor as TT
 
 class DeepDPGModel(object):
 
-    def __init__(self, n_minibatch, n_assets, n_actions, k_info, preprocessed_size, lstm_size, merge_size):
+    def __init__(self, n_minibatch, n_assets, n_actions, k_info, preprocessed_size, lstm_size, merge_size, dense_sizes):
 
         self.policy_model = DeepPolicyNetwork(
             n_minibatch,
@@ -18,7 +18,18 @@ class DeepDPGModel(object):
             lstm_size,
             merge_size
         )
-        self.q_model = DeepQNetwork
+        self.q_model = DeepQNetwork(
+            n_minibatch,
+            n_assets,
+            n_actions,
+            k_info,
+            preprocessed_size,
+            lstm_size,
+            merge_size * 2,
+            dense_sizes
+        )
+
+        self.replay_cache = None
 
 # need current weights and target weights
 # update weights (current via SGD, target from post SGD)
